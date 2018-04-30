@@ -28,6 +28,7 @@ public class Server implements Runnable {
             System.out.println("connection from " + s.getInetAddress());
             ps.println("echo %username%");
             String uname = din.readLine();
+            din.readLine();
             while(true) {
                 System.out.print(uname + ">");
                 String in = Keyboard.readString();
