@@ -24,13 +24,20 @@ public class Server implements Runnable {
             s = ss.accept();
             ps = new PrintStream(s.getOutputStream());
             os = s.getOutputStream();
+            din = new BufferedReader(new InputStreamReader(s.getInputStream()));
             System.out.println("connection from " + s.getInetAddress());
+            ps.println("echo %username%");
+            String uname = din.readLine();
             while(true) {
-                System.out.print(">");
+                System.out.print(uname + ">");
                 String in = Keyboard.readString();
                 ps.println(in);
+                String line = din.readLine();
+                while(!line.equals("{}{}{}")) {
+                    System.out.println(line);
+                    line=din.readLine();
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
