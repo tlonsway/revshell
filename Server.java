@@ -30,8 +30,7 @@ public class Server implements Runnable {
                 String in = Keyboard.readString();
                 ps.println(in);
             }
-            
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }

