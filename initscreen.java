@@ -10,7 +10,7 @@ public class initscreen {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Windows Authentication Service");
         frame.setVisible(true);
-        frame.setSize(550,300);
+        frame.setSize(450,500);
         window win = new window();
         frame.add(win);
         win.setVisible(true);
