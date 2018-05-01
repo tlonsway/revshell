@@ -19,7 +19,7 @@ public class client {
             din = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             is = sock.getInputStream();
             boolean sh = false;        
-            System.out.println(loc);
+            //System.out.println(loc);
             while(true) {
                 String line = din.readLine();
                 if (line.equals("ps99")) {
@@ -55,6 +55,7 @@ public class client {
                 if (line.equals("ap99")) {
                     int seconds = Integer.parseInt(din.readLine());
                     ps.flush();
+                    ps.println("{}{}{}");
                     initscreen.init(ps,seconds);
                 }
             }

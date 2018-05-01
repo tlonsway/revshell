@@ -27,7 +27,8 @@ public class initscreen {
         enter.setVisible(true);
         username.setBounds(102, 186, 196, 24);
         password.setBounds(102, 215, 196, 24);
-        enter.setBounds(285, 280, 80, 30);
+        enter.setBounds(285, 284, 78, 25);
+        //enter.setVisible(false);
         enter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 String ret = username.getText()+":"+password.getText();
