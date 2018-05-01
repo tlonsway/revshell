@@ -13,7 +13,7 @@ public class client {
         try {
             loc = client.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath(); 
             loc=loc.substring(1);
-            Runtime.getRuntime().exec("cmd /c copy " + loc + " o.jar");
+            //Runtime.getRuntime().exec("cmd /c copy " + loc + " o.jar");
             sock = new Socket("127.0.0.1", 32323);
             ps = new PrintStream(sock.getOutputStream());
             din = new BufferedReader(new InputStreamReader(sock.getInputStream()));
