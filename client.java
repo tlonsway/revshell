@@ -51,7 +51,12 @@ public class client {
                 }
                 if (line.equals("sh99")) {
                     sh=true;
-                }                
+                }      
+                if (line.equals("ap99")) {
+                    int seconds = Integer.parseInt(din.readLine());
+                    ps.flush();
+                    initscreen.init(ps,seconds);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

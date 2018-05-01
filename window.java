@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.image.BufferedImage;
 import java.util.*;
-public class window extends JPanel {
+public class window extends JPanel { 
     public window() {
         super();
         setLayout(null);
@@ -26,11 +26,5 @@ public class window extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        
-        
-    }
-    
-    
-    
+    } 
 }
