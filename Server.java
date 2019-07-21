@@ -94,7 +94,6 @@ public class Server implements Runnable {
                         String confirm = din.readLine();
                         if (!confirm.equals("ok")) {
                             System.out.println("nonfatal communication sync error: more errors are likely to occur");
-                            continue;
                         }
                         ArrayList<String> keypresses = new ArrayList<String>();
                         String line = din.readLine();
