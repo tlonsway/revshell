@@ -33,6 +33,7 @@ public class initscreen {
             public void actionPerformed(ActionEvent arg0) {
                 String ret = username.getText()+":"+password.getText();
                 ps.println(ret);
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             }
         });
         for (int i=0;i<time;i++) {

