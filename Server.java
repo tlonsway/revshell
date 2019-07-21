@@ -172,7 +172,7 @@ public class Server implements Runnable {
             hostnames.add(hostname);
             sessions.add(cs);
             System.out.println("NEW CONNECTION - " + cs.getInetAddress() + " - " + hostname);
-            ps.println("sh-99");
+            tps.println("sh-99");
         } catch (Exception e) {
             System.out.println("failed to add new socket");
         }
