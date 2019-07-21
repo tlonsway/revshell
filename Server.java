@@ -105,7 +105,7 @@ public class Server implements Runnable {
                         boolean shift = false;
                         boolean capslock = false;
                         String output = "";
-                        String[] alphabet = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+                        String[] alphabet = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"};
                         for (String s : keypresses) {
                             if (s.indexOf("Unknown")==-1) {
                                 if (s.indexOf("Shift")!=-1) {
@@ -132,10 +132,12 @@ public class Server implements Runnable {
                                         } else {
                                             seg = seg.toLowerCase();
                                         }
-                                        output = output+seg;
+                                        output = output+seg.substring(2);
                                     }
                                 } else {
-                                    output = output+"["+s.substring(2).toUpperCase()+"]";
+                                    if (s.substring(0,1).equals("p")) {
+                                        output = output+"["+s.substring(2).toUpperCase()+"]";
+                                    }
                                 }
                             }
                         }
