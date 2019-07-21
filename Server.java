@@ -100,6 +100,7 @@ public class Server implements Runnable {
                         String line = din.readLine();
                         while(!line.equals("{}{}{}")) {
                             keypresses.add(line);
+                            line = din.readLine();
                         }
                         System.out.println("keypress retrieval completed successfully");
                         boolean shift = false;
