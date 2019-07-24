@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import org.apache.commons.text.*;
-import org.apache.commons.lang3.*;
 import java.io.*;
 import javax.imageio.ImageIO;
 import java.io.File;
