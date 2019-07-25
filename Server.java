@@ -171,17 +171,36 @@ public class Server implements Runnable {
 				}
 				if (command.equals("upload")) {
 					try {
+						ps.println("ul");
 						System.out.println("file upload initiated");
-						System.out.println("enter complete URI of file to upload");
-						String loc = Keyboard.readString();
-						File fileToUpload = new File(loc);
+						System.out.println("enter complete URI of file to upload and URI of file destination");
+						String[] locDestTmp = Keyboard.readString().split(" ");
+						String[] locDest = new String[2];
+						locDest[0] = locDestTmp[0];
+						File fileToUpload = new File(locDest[0]);
 						if (!fileToUpload.exists()) {
 							System.out.println("file doesn't exist");
+						} else if (locDest.length < 1) {
+							System.out.println("Syntax is: [local file location] <destination file location>");
 						} else {
+							if (locDest.length == 1) {
+								locDest[1] = "de";
+							}
+							ps.println(locDest[1]);
+							String ret = din.readLine();
+
+							if (ret.equals("fe")) {
+								System.out.println("File destination does not exist");
+							}
 							byte[] fileBytes = new byte[(int) fileToUpload.length()];
 							BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
 							bin.read(fileBytes);
 
+							System.out.println("sending file " + locDest[0] + " to " + locDest[1]);
+							os.write(fileBytes);
+							os.flush();
+
+							System.out.println("finished file transfer");
 						}
 					} catch (Exception e) {
 						System.out.println("failed to upload file");
@@ -277,6 +296,11 @@ public class Server implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void switchSession(int i) {
+		Socket current = sessions.get(i);
+
 	}
 
 	public void addSocket(Socket cs) {
