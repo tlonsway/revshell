@@ -107,6 +107,7 @@ public class client {
 							dest = loc;
 							System.out.println("default file dest: " + dest);
 						}
+						dest = dest.replace("/", "\\");
 						if (new File(dest.substring(0, dest.lastIndexOf(System.getProperty("file.separator"))))
 								.exists()) {
 							ps.println("ok");
@@ -151,7 +152,7 @@ public class client {
 					}
 				}
 			} catch (Exception e) {
-			    e.printStackTrace();
+				e.printStackTrace();
 			}
 			try {
 				Thread.sleep(10000);
