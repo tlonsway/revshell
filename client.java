@@ -151,6 +151,7 @@ public class client {
 					}
 				}
 			} catch (Exception e) {
+			    e.printStackTrace();
 			}
 			try {
 				Thread.sleep(10000);
