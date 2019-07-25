@@ -103,44 +103,30 @@ public class client {
 						System.out.println("upload if statement");
 						String dest = din.readLine();
 						System.out.println("recieved file dest: " + dest);
+						boolean de = false;
 						if (dest.equals("de")) {
 							dest = loc;
 							System.out.println("default file dest: " + dest);
+							de = true;
 						}
 						dest = dest.replace("/", "\\");
-						if (new File(dest.substring(0, dest.lastIndexOf("\\")))
-								.exists()) {
+						if (new File(dest.substring(0, dest.lastIndexOf("\\"))).exists()) {
 							ps.println("ok");
 							System.out.println("dir exists");
 						} else {
 							ps.println("fe");
 							System.out.println("file doesn't exist");
 						}
+						if (de) {
+							dest = dest.substring(dest.lastIndexOf("\\") + 1);
+						}
 						byte[] rBytes = new byte[100000000];
-						File f = new File(dest);
-						f.createNewFile();
-						FileOutputStream fos = new FileOutputStream(f);
+						FileOutputStream fos = new FileOutputStream(dest);
 						BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-						int bytesRead = is.read(rBytes);
-						int current = bytesRead;
-
-						do {
-							System.out.println("loop");
-							bytesRead = is.read(rBytes, current, (rBytes.length - current));
-							if (bytesRead >= 0) {
-								current += bytesRead;
-							}
-						} while (bytesRead > -1);
-
-						bos.write(rBytes, 0, current);
-						bos.flush();
-						fos.flush();
-
-						if (bos != null)
-							bos.close();
-						if (fos != null)
-							fos.close();
+						int bytesRead = is.read(rBytes, 0, rBytes.length);
+						bos.write(rBytes, 0, bytesRead);
+						bos.close();
 					}
 					if (line.equals("dl")) {
 						ps.println("ok");
