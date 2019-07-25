@@ -21,7 +21,7 @@ public class Server implements Runnable {
     OutputStream os;
     ArrayList<Socket> sessions = new ArrayList<Socket>();
     ArrayList<String> hostnames = new ArrayList<String>();
-    ArrayList<String> lanIPs = new ArrayList<>();
+    ArrayList<String> lanIPs = new ArrayList<String>();
     ArrayList<String> usernames = new ArrayList<String>();
 
     public static void main(String[] args) throws Exception {
@@ -331,7 +331,7 @@ public class Server implements Runnable {
                     try {
                         System.out.println("LISTING SESSIONS:\n");
                         for (int i = 0; i < sessions.size(); i++) {
-                            System.out.println(i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i));
+                            System.out.println(i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i) + " - " + lanIPs.get(i) + " - " + usernames.get(i));
                         }
                     } catch (Exception e) {
                         System.out.println("failed to list sessions");
