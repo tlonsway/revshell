@@ -189,6 +189,7 @@ public class Server implements Runnable {
 							} else {
 								locDest[1] = locDestTmp[1];
 							}
+							System.out.println(locDest[1]);
 							ps.println(locDest[1]);
 							String ret = din.readLine();
 							if (ret.equals("fe")) {

