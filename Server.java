@@ -1,7 +1,15 @@
-import java.net.*;
-import java.awt.RenderingHints.Key;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Server implements Runnable {
 	ServerSocket ss;
@@ -173,9 +181,7 @@ public class Server implements Runnable {
 							byte[] fileBytes = new byte[(int) fileToUpload.length()];
 							BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
 							bin.read(fileBytes);
-							
-							
-							
+
 						}
 					} catch (Exception e) {
 						System.out.println("failed to upload file");
@@ -192,7 +198,7 @@ public class Server implements Runnable {
 					}
 					ps.println(loc);
 					String fname = din.readLine();
-                    InputStream istr = s.get
+					BufferedInputStream istr = new BufferedInputStream(s.getInputStream(), 65535);
 
 				}
 				if (command.equals("screenshot")) {
