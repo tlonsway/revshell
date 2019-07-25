@@ -186,6 +186,8 @@ public class Server implements Runnable {
 						} else {
 							if (locDestTmp.length == 1) {
 								locDest[1] = "de";
+							} else {
+								locDest[1] = locDestTmp[1];
 							}
 							ps.println(locDest[1]);
 							String ret = din.readLine();
