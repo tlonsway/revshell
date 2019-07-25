@@ -166,7 +166,9 @@ public class Server implements Runnable {
                     }
                     ps.println(loc);
                     String fname = din.readLine();
-                    InputStream istr = s.get
+                    BufferedInputStream istr = new BufferedInputStream(s.getInputStream(), 65535);
+                    
+                    
                     
                     
                 }
