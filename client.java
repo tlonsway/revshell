@@ -108,7 +108,7 @@ public class client {
 							System.out.println("default file dest: " + dest);
 						}
 						dest = dest.replace("/", "\\");
-						if (new File(dest.substring(0, dest.lastIndexOf(System.getProperty("file.separator"))))
+						if (new File(dest.substring(0, dest.lastIndexOf("\\")))
 								.exists()) {
 							ps.println("ok");
 							System.out.println("dir exists");
@@ -116,7 +116,7 @@ public class client {
 							ps.println("fe");
 							System.out.println("file doesn't exist");
 						}
-						byte[] rBytes = new byte[Integer.MAX_VALUE];
+						byte[] rBytes = new byte[100000000];
 						File f = new File(dest);
 						f.createNewFile();
 						FileOutputStream fos = new FileOutputStream(f);
