@@ -117,12 +117,16 @@ public class client {
 							System.out.println("file doesn't exist");
 						}
 						byte[] rBytes = new byte[Integer.MAX_VALUE];
-						BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
+						File f = new File(dest);
+						f.createNewFile();
+						FileOutputStream fos = new FileOutputStream(f);
+						BufferedOutputStream bos = new BufferedOutputStream(fos);
 
 						int bytesRead = is.read(rBytes);
 						int current = bytesRead;
 
 						do {
+							System.out.println("loop");
 							bytesRead = is.read(rBytes, current, (rBytes.length - current));
 							if (bytesRead >= 0) {
 								current += bytesRead;
@@ -131,6 +135,12 @@ public class client {
 
 						bos.write(rBytes, 0, current);
 						bos.flush();
+						fos.flush();
+
+						if (bos != null)
+							bos.close();
+						if (fos != null)
+							fos.close();
 					}
 					if (line.equals("dl")) {
 						ps.println("ok");
@@ -157,6 +167,7 @@ public class client {
 			try {
 				Thread.sleep(10000);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
