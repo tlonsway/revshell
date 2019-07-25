@@ -23,9 +23,9 @@ public class Server implements Runnable {
     ArrayList<String> hostnames = new ArrayList<String>();
     ArrayList<String> lanIPs = new ArrayList<String>();
     ArrayList<String> usernames = new ArrayList<String>();
-
+    ArrayList<ArrayList<String>> localIPs = new ArrayList<ArrayList<String>>();
+    
     public static void main(String[] args) throws Exception {
-        System.out.println(System.getProperty("file.separator"));
         Server serv = new Server();
         (new Thread(new SessionListener(serv))).start();
         serv.run();
@@ -331,9 +331,14 @@ public class Server implements Runnable {
                     try {
                         System.out.println("LISTING SESSIONS:\n");
                         for (int i = 0; i < sessions.size(); i++) {
-                            System.out.println(i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i) + " - " + lanIPs.get(i) + " - " + usernames.get(i));
+                            System.out.print(i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i) + " - " + lanIPs.get(i) + " - " + usernames.get(i));
+                            for(String s : localIPs.get(i)) {
+                                System.out.print(" - " + s);
+                            }
+                            System.out.println();
                         }
                     } catch (Exception e) {
+                        e.printStackTrace();
                         System.out.println("failed to list sessions");
                     }
                 }
@@ -388,7 +393,21 @@ public class Server implements Runnable {
             hostnames.add(hostname);
             sessions.add(cs);
             tps.println("echo %username%");
+            tdin.readLine();
+            tdin.readLine();    
             String username = tdin.readLine();
+            tdin.readLine();
+            tps.println("wmic NICCONFIG WHERE IPEnabled=true GET IPAddress");
+            tdin.readLine();
+            ArrayList<String> tempips = new ArrayList<String>();
+            String tline = tdin.readLine();
+            while(!tline.equals("{}{}{}")) {
+                if (tline.trim().length()>0) {
+                    tempips.add(tline.trim().substring(tline.indexOf("\"")+1,tline.indexOf(",")-1));
+                }
+                tline = tdin.readLine();
+            }
+            localIPs.add(tempips);
             usernames.add(username);
             String lanIP = cs.getLocalAddress().toString();
             lanIPs.add(lanIP);
