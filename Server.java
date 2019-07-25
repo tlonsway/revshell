@@ -186,7 +186,7 @@ public class Server implements Runnable {
 							System.out.println("Syntax is: [local file location] <destination file location>");
 						} else {
 							if (locDestTmp.length == 1) {
-								locDest[1] = "de";
+								locDest[1] = "de " + locDest[0].substring(locDest[0].lastIndexOf("\\") + 1);
 							} else {
 								locDest[1] = locDestTmp[1];
 							}
