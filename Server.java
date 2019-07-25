@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Server implements Runnable {
 	ServerSocket ss;
@@ -171,10 +172,9 @@ public class Server implements Runnable {
 				}
 				if (command.equals("upload")) {
 					try {
+						Scanner input = new Scanner(System.in);
 						ps.println("ul");
-						System.out.println("file upload initiated");
-						System.out.println("enter complete URI of file to upload and URI of file destination");
-						String[] locDestTmp = Keyboard.readString().split(" ");
+						String[] locDestTmp = input.nextLine().split(" ");
 						String[] locDest = new String[2];
 						locDest[0] = locDestTmp[0];
 						File fileToUpload = new File(locDest[0]);

