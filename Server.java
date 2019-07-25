@@ -172,6 +172,7 @@ public class Server implements Runnable {
 				}
 				if (command.equals("upload")) {
 					try {
+						System.out.println("provide a file");
 						Scanner input = new Scanner(System.in);
 						ps.println("ul");
 						String[] locDestTmp = input.nextLine().split(" ");
@@ -180,15 +181,14 @@ public class Server implements Runnable {
 						File fileToUpload = new File(locDest[0]);
 						if (!fileToUpload.exists()) {
 							System.out.println("file doesn't exist");
-						} else if (locDest.length < 1) {
+						} else if (locDestTmp.length < 1) {
 							System.out.println("Syntax is: [local file location] <destination file location>");
 						} else {
-							if (locDest.length == 1) {
+							if (locDestTmp.length == 1) {
 								locDest[1] = "de";
 							}
 							ps.println(locDest[1]);
 							String ret = din.readLine();
-
 							if (ret.equals("fe")) {
 								System.out.println("File destination does not exist");
 							}
