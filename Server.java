@@ -21,8 +21,6 @@ public class Server implements Runnable {
 	OutputStream os;
 	ArrayList<Socket> sessions = new ArrayList<Socket>();
 	ArrayList<String> hostnames = new ArrayList<String>();
-	ArrayList<String> lanIPs = new ArrayList<>();
-	ArrayList<String> usernames = new ArrayList<String>();
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(System.getProperty("file.separator"));
@@ -323,14 +321,6 @@ public class Server implements Runnable {
 			hostname = hostname.substring(hostname.indexOf(" ") + 1);
 			hostnames.add(hostname);
 			sessions.add(cs);
-
-			tps.println("echo %username%");
-			String username = tdin.readLine();
-			usernames.add(username);
-
-			String lanIP = cs.getLocalAddress().toString();
-			lanIPs.add(lanIP);
-
 			System.out.print("<console> : ");
 			tps.println("sh-99");
 		} catch (Exception e) {
