@@ -365,6 +365,8 @@ public class Server implements Runnable {
                         System.out.println("Critical error communicating with session - terminating connection");
                         sessions.remove(tsesnum);
                         hostnames.remove(tsesnum);
+                        lanIPs.remove(tsesnum);
+                        localIPs.remove(tsesnum);
                     }
                 }
             }
@@ -390,8 +392,6 @@ public class Server implements Runnable {
             tdin.readLine();
             String hostname = tdin.readLine();
             hostname = hostname.substring(hostname.indexOf(" ") + 1);
-            hostnames.add(hostname);
-            sessions.add(cs);
             tps.println("echo %username%");
             tdin.readLine();
             tdin.readLine();    
@@ -407,13 +407,41 @@ public class Server implements Runnable {
                 }
                 tline = tdin.readLine();
             }
-            localIPs.add(tempips);
-            usernames.add(username);
             String lanIP = cs.getLocalAddress().toString();
-            lanIPs.add(lanIP);
-            System.out.print("<console> : ");
-            tps.println("sh-99");
+            boolean notconnectedyet = true;
+            if (usernames.contains(username) && hostnames.contains(hostname) && lanIPs.contains(lanIP)) {
+                for(ArrayList<String> sarr : localIPs) {
+                    if (sarr.size()==tempips.size()) {
+                        for(int i=0;i<sarr.size();i++) {
+                            if (!tempips.get(i).equals(sarr.get(i))) {
+                                break;
+                            }
+                            if (i==sarr.size()-1) {
+                                notconnectedyet=false;
+                            }
+                        }
+                    }
+                }
+            }
+            if (notconnectedyet) {
+                localIPs.add(tempips);
+                usernames.add(username);
+                lanIPs.add(lanIP);
+                hostnames.add(hostname);
+                sessions.add(cs);
+                System.out.print("\nNEW SESSION CONNECTED: IP-" + cs.getInetAddress() + " - " + hostname + " - " + lanIP + " - " + username);
+                for(String s : tempips) {
+                    System.out.print(" - " + s);
+                }
+                System.out.println("\n");
+                System.out.print("<console> : ");
+                tps.println("sh-99");
+            } else {
+                tps.println("sh-99");
+                tps.println("q");
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("failed to add new socket");
         }
     }
