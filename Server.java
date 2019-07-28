@@ -124,10 +124,14 @@ public class Server implements Runnable {
                             ps.println("sh99");
                             ps.println(bscmd);
                             System.out.println("command sent");
-                            String line = din.readLine();
-                            while (!line.equals("{}{}{}")) {
-                                System.out.println(line);
-                                line = din.readLine();
+                            try {
+                                String line = din.readLine();
+                                while (!line.equals("{}{}{}")) {
+                                    System.out.println(line);
+                                    line = din.readLine();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                             ps.println("sh-99");
                         } catch (Exception e) {
