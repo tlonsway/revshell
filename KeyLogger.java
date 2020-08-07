@@ -2,13 +2,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+//import org.jnativehook.GlobalScreen;
+//import org.jnativehook.NativeHookException;
+//import org.jnativehook.keyboard.NativeKeyEvent;
+//import org.jnativehook.keyboard.NativeKeyListener;
 
-public class KeyLogger implements Runnable, NativeKeyListener {
-	private ArrayList<String> keypresses;
+//public class KeyLogger implements Runnable, NativeKeyListener {
+    public class KeyLogger {
+/*	private ArrayList<String> keypresses;
 	private boolean active;
 	private boolean gathering;
 
@@ -79,4 +80,5 @@ public class KeyLogger implements Runnable, NativeKeyListener {
 	public void setGathering(boolean gathering) {
 		this.gathering = gathering;
 	}
+	*/
 }

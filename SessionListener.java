@@ -7,7 +7,7 @@ public class SessionListener implements Runnable {
     public SessionListener(Server ser) {
         serv=ser;
         try {
-            ss = new ServerSocket(32323);
+            ss = new ServerSocket(43434);
         } catch (Exception e) {
             e.printStackTrace();
         }

